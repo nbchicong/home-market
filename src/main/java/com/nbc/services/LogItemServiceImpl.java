@@ -1,9 +1,8 @@
 package com.nbc.services;
 
-import com.nbc.dao.BaseDAO;
+import com.nbc.data.ListData;
 import com.nbc.model.LogItem;
-import org.apache.log4j.Logger;
-import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.query.Query;
 
 /**
  * LogItemServiceImpl
@@ -12,26 +11,15 @@ import org.bson.types.ObjectId;
  * @version $Id: LogItemServiceImpl.java Dec 29, 2016 00:04:24 nbccong $
  * @since 1.0
  */
-public class LogItemServiceImpl implements LogService<LogItem> {
-  private static final Logger logger = Logger.getLogger(LogItemServiceImpl.class);
+public class LogItemServiceImpl extends AbstractService<LogItem> {
 
-  private BaseDAO dao;
-
-  public BaseDAO getDao() {
-    return dao;
+  @Override
+  public ListData<LogItem> get() {
+    return null;
   }
 
-  public void setDao(BaseDAO dao) {
-    this.dao = dao;
-  }
-
-  @SuppressWarnings("unchecked")
-  public ObjectId add(LogItem log) {
-    logger.debug("Adding a new LogItem instance");
-    return getDao().insert(log);
-  }
-
-  public LogItem get(ObjectId id) {
-    return (LogItem) getDao().load(id);
+  @Override
+  public ListData<LogItem> get(Query query) {
+    return null;
   }
 }

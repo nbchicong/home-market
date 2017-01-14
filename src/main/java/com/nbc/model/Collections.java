@@ -17,8 +17,8 @@ public class Collections {
   private String iconCls;
   private ObjectId parentId;
 
-  private int countView;
-  private int countProduct;
+  private int countView = 0;
+  private int countProduct = 0;
 
   private ProductEntity newestProduct;
 
@@ -76,5 +76,18 @@ public class Collections {
 
   public void setNewestProduct(ProductEntity newestProduct) {
     this.newestProduct = newestProduct;
+  }
+
+  @Override
+  public String toString() {
+    return "Collections{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", iconCls='" + iconCls + '\'' +
+        ", parentId=" + parentId +
+        ", countView=" + countView +
+        ", countProduct=" + countProduct +
+        ", newestProduct=" + newestProduct +
+        '}';
   }
 }

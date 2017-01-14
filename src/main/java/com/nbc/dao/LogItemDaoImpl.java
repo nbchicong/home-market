@@ -1,9 +1,12 @@
 package com.nbc.dao;
 
+import com.nbc.data.ListData;
 import com.nbc.model.LogItem;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.List;
 
 /**
  * LogItemDaoImpl
@@ -14,8 +17,18 @@ import org.springframework.data.mongodb.core.query.Query;
  */
 public class LogItemDaoImpl extends AbstractBaseDao implements BaseDAO<LogItem> {
   @Override
-  public LogItem query() {
-    return null;
+  public List<LogItem> query() {
+    return mongoTemplate.findAll(LogItem.class);
+  }
+
+  @Override
+  public List<LogItem> query(Query query) {
+    return mongoTemplate.find(query, LogItem.class);
+  }
+
+  @Override
+  public int count(Query query) {
+    return (int) mongoTemplate.count(query, LogItem.class);
   }
 
   @Override

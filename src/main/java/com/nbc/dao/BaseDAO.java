@@ -1,6 +1,9 @@
 package com.nbc.dao;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.List;
 
 /**
  * BaseDAO for Hibernate Entities
@@ -11,7 +14,9 @@ import org.bson.types.ObjectId;
  */
 
 public interface BaseDAO<T> {
-  T query();
+  List<T> query();
+  List<T> query(Query query);
+  int count(Query query);
   T load(ObjectId id);
   ObjectId insert(T entity);
   void update(ObjectId id, T entity);

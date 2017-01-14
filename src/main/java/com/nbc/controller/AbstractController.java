@@ -1,12 +1,17 @@
 package com.nbc.controller;
 
 import com.nbc.utils.DateUtils;
+import com.nbc.utils.NumberUtils;
+import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 import java.util.Date;
 
-public abstract class AbstractController {
+public abstract class AbstractController<T> {
+  protected static final Logger logger = Logger.getLogger(AbstractController.class);
   /**
    * @param request
    * @param name
@@ -14,6 +19,10 @@ public abstract class AbstractController {
    */
   public String getString(HttpServletRequest request, String name) {
     return request.getParameter(name);
+  }
+
+  public ObjectId getObjectId(HttpServletRequest request, String name) {
+    return new ObjectId(getString(request, name));
   }
 
   /**
@@ -127,6 +136,53 @@ public abstract class AbstractController {
       return DateUtils.getDate(text, pattern);
     }
 
+    return null;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected T getModel(HttpServletRequest request, Class<T> model) {
+    try {
+      Class<?> clazzName = Class.forName(model.getSimpleName());
+      Object instance = clazzName.newInstance();
+      Class<?> clazz = instance.getClass();
+      Field[] fields = model.getDeclaredFields();
+      for (Field item : fields) {
+        while (clazz != null) {
+          try {
+            String fieldName = item.getName();
+            Field field = clazz.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(instance, getValue(request, fieldName));
+          } catch (NoSuchFieldException e) {
+            clazz = clazz.getSuperclass();
+          } catch (Exception e) {
+            throw new IllegalStateException(e);
+          }
+        }
+      }
+      return (T) instance;
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  private Object getValue(HttpServletRequest request, String name) {
+    String tmpValue = getString(request, name);
+    if (name.equals("id"))
+      return getObjectId(request, name);
+    else if (NumberUtils.isInteger(tmpValue))
+      return getInt(request, name);
+    else if (NumberUtils.isLong(tmpValue))
+      return getLong(request, name, 0L);
+    else if (NumberUtils.isFloat(tmpValue))
+      return getFloat(request, name, 0F);
+    else if (NumberUtils.isBoolean(tmpValue))
+      return getBoolean(request, name, false);
     return null;
   }
 }
