@@ -68,7 +68,6 @@ public abstract class AbstractController<T> {
    */
   public long getLong(HttpServletRequest request, String name, long defaultValue) {
     String text = request.getParameter(name);
-    System.out.println("Get Long");
     if (StringUtils.hasLength(text)) {
       try {
         return Integer.valueOf(text);
